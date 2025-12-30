@@ -1,20 +1,18 @@
 param(
-  [string]$HostIp = '
-100.66.215.17
-',
+  [string]$HostIp = "100.66.215.17",
   [string]$User = 'administrator',
-  [string]$KeyPath = '
-C:\Users\adm_manoah
-\\.ssh\\id_ed25519_erp'
+  [string]$KeyPath = ($env:USERPROFILE + '\\.' + 'ssh\\id_ed25519_erp')
 )
 
 $ssh = 'C:\\Windows\\System32\\OpenSSH\\ssh.exe'
 $ts = Get-Date -Format 'yyyyMMdd-HHmmss'
-$outDir = Join-Path  ('..\\inventory\\' + $ts)
+$outDir = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot -ChildPath ('..\\inventory\\' + $ts)))
+$knownHosts = Join-Path ([System.IO.Path]::GetTempPath()) 'ssh_known_hosts'
 New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 
 function Run-Remote([string]$cmd, [string]$outFile){
-  & $ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=C:\Users\ADM_MA~1\AppData\Local\Temp\\ssh_known_hosts -i $KeyPath ($User + '@' + $HostIp) $cmd | Out-File -FilePath (Join-Path $outDir $outFile) -Encoding ASCII
+  $args = @('-o','BatchMode=yes','-o','StrictHostKeyChecking=no','-o',('UserKnownHostsFile=' + $knownHosts),'-i',$KeyPath, ($User + '@' + $HostIp), $cmd)
+  & $ssh @args | Out-File -FilePath (Join-Path $outDir $outFile) -Encoding ASCII
 }
 
 Run-Remote 'hostname' 'hostname.txt'
@@ -29,4 +27,3 @@ Run-Remote 'dpkg -l' 'packages.txt'
 Run-Remote 'tailscale status' 'tailscale-status.txt'
 
 Write-Host ('Snapshot complete: ' + $outDir)
-
