@@ -1,6 +1,6 @@
 param(
   [string]$HostIp = "100.66.215.17",
-  [string]$User = 'administrator',
+  [string]$User = "administrator",
   [string]$KeyPath = ($env:USERPROFILE + '\\.' + 'ssh\\id_ed25519_erp')
 )
 
@@ -22,7 +22,7 @@ Run-Remote 'ip addr' 'ip-addr.txt'
 Run-Remote 'ip route' 'ip-route.txt'
 Run-Remote 'ss -ltnp' 'listening-tcp.txt'
 Run-Remote 'systemctl list-units --type=service --state=running' 'services-running.txt'
-Run-Remote 'ufw status verbose' 'ufw-status.txt'
+Run-Remote "sh -c 'sudo -n ufw status verbose 2>/dev/null || ufw status verbose 2>/dev/null || true'" 'ufw-status.txt'
 Run-Remote 'dpkg -l' 'packages.txt'
 Run-Remote 'tailscale status' 'tailscale-status.txt'
 
