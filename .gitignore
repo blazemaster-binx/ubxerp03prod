@@ -1,0 +1,29 @@
+# Secrets
+*.key
+*.pem
+*.pfx
+*.p12
+*.kdbx
+*.env
+.env.*
+*.crt
+*.der
+*.jks
+*.keystore
+# OS/Editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+# Dumps/archives
+*.zip
+*.tar
+*.gz
+*.7z
+*.bak
+*.tgz
+*.rar
+# Logs
+*.log
+logs/
