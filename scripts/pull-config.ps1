@@ -26,4 +26,10 @@ Run-Remote "sh -c 'sudo -n ufw status verbose 2>/dev/null || ufw status verbose 
 Run-Remote 'dpkg -l' 'packages.txt'
 Run-Remote 'tailscale status' 'tailscale-status.txt'
 
+# Config snapshots (redacted)
+Run-Remote "sh -c 'sudo -n cat /etc/ssh/sshd_config 2>/dev/null || cat /etc/ssh/sshd_config 2>/dev/null || true'" 'config-sshd_config.txt'
+Run-Remote "sh -c 'sudo -n cat /etc/odoo/odoo.conf 2>/dev/null | sed -E \"s/(password|passwd|admin_passwd)[[:space:]]*=.*/\\1 = ********/I\" || true'" 'config-odoo.conf'
+Run-Remote "sh -c 'sudo -n cat /opt/mailcow-dockerized/mailcow.conf 2>/dev/null | sed -E \"s/([A-Z0-9_]*(PASS|PASSWORD|SECRET|KEY|TOKEN)[A-Z0-9_]*)=.*/\\1=********/I\" || true'" 'config-mailcow.conf'
+Run-Remote "sh -c 'sudo -n cat /var/www/nextcloud/config/config.php 2>/dev/null | sed -E \"s/(password|secret)[^=]*=>.*/\\1 => \\\"********\\\"/I\" || true'" 'config-nextcloud.php'
+
 Write-Host ('Snapshot complete: ' + $outDir)
